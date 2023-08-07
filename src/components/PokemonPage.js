@@ -2,12 +2,20 @@ import React, {useState, useEffect} from "react";
 import PokemonCollection from "./PokemonCollection";
 import PokemonForm from "./PokemonForm";
 import Search from "./Search";
-import { Container } from "semantic-ui-react";
+import { Container, Form } from "semantic-ui-react";
 
 function PokemonPage() {
 
   const [allPokemon, setAllPokemon] = useState([])
   const [search, setSearch] = useState("")
+  const [newPokemon, setNewPokemon] = useState({
+    name: "",
+    hp: 0,
+    sprites: {
+      front: "test front",
+      back: "test back"
+    }
+  })
 
   useEffect(() => {
     fetch("http://localhost:3001/pokemon")
@@ -18,22 +26,28 @@ function PokemonPage() {
   const searchedPokemon = allPokemon.filter((pokemon) => {
     if (pokemon.name.includes(search)) {return pokemon}})
 
-function handleSubmit(){
-  console.log("we are in the app!")
-  //we call the on submit in the form
-  //we take teh input data and set the state based on the input
-  //we have access to those values now in the app component
-  //in app we set that of the new "all pokemon"
-    //1) update teh server
-    //2) update the state locally
-}
+function handleSubmit(event){
+  fetch("http://localhost:3001/pokemon", {
+    method: "POST",
+    headers: {
+    "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newPokemon),
+  })
+  .then(r => r.json())
+  .then((postedPokemon) => setAllPokemon([...allPokemon, postedPokemon]))
+  event.target.reset()
+  }
   
 
     return (
     <Container>
       <h1>Pokemon Searcher</h1>
       <br />
-      <PokemonForm handleSubmit={handleSubmit}/>
+      <PokemonForm
+      handleSubmit={handleSubmit}
+      newPokemon={newPokemon}
+      setNewPokemon={setNewPokemon}/>
       <br />
       <Search setSearch={setSearch}/>
       <br />
