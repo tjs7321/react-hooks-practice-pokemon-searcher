@@ -1,14 +1,12 @@
 import React from "react";
 import { Form } from "semantic-ui-react";
 
-function PokemonForm() {
+function PokemonForm({handleSubmit}) {
   return (
     <div>
       <h3>Add a Pokemon!</h3>
       <Form
-        onSubmit={() => {
-          console.log("submitting form...");
-        }}
+        onSubmit={handleSubmit}
       >
         <Form.Group widths="equal">
           <Form.Input fluid label="Name" placeholder="Name" name="name" />
